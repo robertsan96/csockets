@@ -23,6 +23,9 @@ int main(int argc, const char * argv[]) {
     
     int sockfd, newsockfd, portno;
     struct sockaddr_in serv_addr, cli_addr;
+    socklen_t clilen;
+    char buffer[1048];
+    long n;
     
     if (argc < 2) {
         fprintf(stderr, "ERROR, no port provided\n");
@@ -47,4 +50,26 @@ int main(int argc, const char * argv[]) {
     }
     
     listen(sockfd, 5);
+    
+    clilen = sizeof(cli_addr);
+    newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+    if (newsockfd < 0) {
+        error("ERROR on accept");
+    }
+
+    bzero(buffer, 1048);
+    
+    n = read(newsockfd, buffer, 1047);
+    if (n < 0) {
+        error("ERROR reading from socket");
+    }
+    printf("Here is the message: %s", buffer);
+    n = write(newsockfd, "I got your message", 18);
+    if (n < 0) {
+        error("ERROR writing to socket");
+    }
+    
+    close(newsockfd);
+    close(sockfd);
+    return 0;
 }
