@@ -26,7 +26,8 @@ int main(int argc, const char * argv[]) {
     socklen_t clilen;
     char buffer[1048];
     long n;
-    
+    char response[] = "Welcome!";
+
     if (argc < 2) {
         fprintf(stderr, "ERROR, no port provided\n");
         exit(1);
@@ -64,7 +65,8 @@ int main(int argc, const char * argv[]) {
         error("ERROR reading from socket");
     }
     printf("Here is the message: %s", buffer);
-    n = write(newsockfd, "I got your message", 18);
+    
+    n = write(newsockfd, response, sizeof(response));
     if (n < 0) {
         error("ERROR writing to socket");
     }
